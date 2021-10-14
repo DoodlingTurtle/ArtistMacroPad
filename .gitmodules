@@ -1,0 +1,3 @@
+[submodule "modules/RGSDL"]
+	path = modules/RGSDL
+	url = ../RGSDL
