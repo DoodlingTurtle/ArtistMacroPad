@@ -1,0 +1,29 @@
+64
+480
+50
+41
+50
+6
+0
+32
+252
+ALT
+3
+keydown alt
+sleep 1 
+keyup alt
+50
+47
+50
+6
+0
+32
+252
+ALT\n+SHIFT
+5
+keydown alt
+keydown shift
+sleep 1 
+keyup shift
+keyup alt
+
