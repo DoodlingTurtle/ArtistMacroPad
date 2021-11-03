@@ -2,3 +2,4 @@ build
 .vscode
 .vimspector.json
 debug.main
+.clang-format

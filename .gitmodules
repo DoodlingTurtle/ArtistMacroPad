@@ -1,0 +1,3 @@
+[submodule "modules/RGSDL"]
+	path = modules/RGSDL
+	url = git@github.com:DoodlingTurtle/RGSDL.git
