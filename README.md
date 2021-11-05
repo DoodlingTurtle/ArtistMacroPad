@@ -11,7 +11,12 @@ This application is still in a very early alpha stage so if you want to help me 
 
 
 # Installation
-You will need 3 componets to launch this application. 
+
+Grab the x86, 64bit precompiled binary in the release section: https://github.com/DoodlingTurtle/ArtistMacroPad/releases
+
+, or compile the project by your self.
+
+There are 3 dependencys / packages that must be installed in addition (both for building the project and for running it). 
 SDL2, SDL2Image and xdotool
 
 on Linux Mint / Ubuntu / Debian you can install them like so:
