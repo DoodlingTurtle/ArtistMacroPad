@@ -22,36 +22,32 @@ sudo apt install libsdl2-dev libsdl2-image-dev xdotool
 after that, you can use the `launcher.sh` of this project, to start the application.
 
 # Defining a profile
-If you start the ArtistMacroPad (refered to as AMP from now on) you must bind it to a window first.
+If you start the ArtistMacroPad (refered to as AMP from now on) you must give it a Profile to start. 
 
-The `laucher.sh` will allow you to select a window at the start, by clicking on it.
+The `laucher.sh` will allow you to select a Profile based on a Window you can select.
 
-if you want to start the AMP with as specific window in mind, you can call the `main` or `debug.main` binary and give the WindowClass as the first parameter.
-(You can use something like `xprop` to find the class for your window)
+if you want to start the AMP with as specific window in mind, you can call the `main` or `debug.main` binary and give the path to the profile - ini as the first parameter.
 
 For example for blender or for kdenlive:
 ```bash
 cd [directory where you have saved the AMP application]
-./debug.main Blender
+./debug.main ./assets/Blender.ini
 or
-./debug.main kdenlive
+./debug.main ./assets/kdenlive.ini
 ```
-if the WindowClass you want to use has no profile, the application will let you know what profile file it is looking for.
+if the file you want to use does not exist, the application will let you know.
 Example:
 ```
 Error: Could not find ini file 'assets/Mate-terminal.ini'
 ```
 
 # Creating a Profile
-Profiles are put into the assets folder of the application.
-(In the future I may add options for other pathes too.)
-
-Each profile is an ini file that is named after the window class, that it will be linked to.
+The ./assets folder of the application contains a few example profiles.
 
 **WARNING**: The profiles are used to execute shell commands. 
 so please **check all ini files you get from other sources before using them**.
 
-here is an example for what a profile ini dould look like:
+here is an example for what a profile ini could look like:
 ```ini
 [window]
 width = 96
@@ -64,9 +60,6 @@ x = 0
 y = 41
 w = 50 
 h = 7 
-r = 96 
-g = 96 
-b = 96
 
 [Frame Right]
 label = F - R 
@@ -75,12 +68,40 @@ x = 50
 y = 41
 w = 50 
 h = 7 
-r = 96 
-g = 96 
-b = 96
+
+[Key Z]
+label = Z
+command = key z
+group = Undo # Redo
+x = 0
+y = 7
+w = 50
+h = 7
+
+[#Undo]
+label = Undo 
+command = key ctrl+z
+x = 0
+y = 0
+w = 50
+h = 7
+r = 128 
+g = 0 
+b = 64 
+
+[#Redo]
+label = Redo 
+command = key ctrl+shift+z
+x = 0
+y = 14
+w = 50
+h = 7
+r = 128 
+g = 0 
+b = 64 
 ```
 
-## the `[window]` section is mandetory
+## The `[window]` section is mandetory
 it will define the area, you can place your buttons in.
 the values are in pixels.
 Keep in mind, that the window will also try to scale it self acording to your screens dpi.
@@ -88,25 +109,11 @@ So windows get scaled up on high dpi displays and scaled down for low dpi displa
 (This was made, so that the window will always have roughly the same visual size, when you look at it)
 You can also scale the window afterwards.
 
-## defing buttons
+## Defing buttons
 Every ini group that is not `[window]` is defining a button. 
-```ini
-[Press the left key]
-label = <- 
-command = key Left 
 
-x = 0     
-y = 41
-w = 50 
-h = 7 
-
-r = 96 
-g = 96 
-b = 96
-```  
 The group name `[Press the left key]` is for readability. If you  define multiple groups with the same name, they will override each other. 
-Groups that start with a `#` (example `[#hidden group]` will be ignored.
-(I have plans for hidden groups later)
+Groups that start with a `#` (example `[#hidden group/button]`) will be ignored.
 
 `label` is what is shown on the buttons.
 `command` will be executed, as soon as you interact with the button. (see the Command section for more details).
@@ -114,9 +121,19 @@ Groups that start with a `#` (example `[#hidden group]` will be ignored.
 `x`, `y`, `w`, `h` are the x/y position, with and height of the button inside the window area. all values are percentages from 0-100 (they need to be Integers though).
 
 `r`, `g`, `b` are for red, green and blue these values are from 0 - 255 and define the color of the button.
+They are optional if they are not set, they will be given the value 96
 
+## Group Buttons via the `group` property
+If the button contains a `group` property, it will become a "Group Button" 
+that means, its action only triggers uppon release.
+If the Button is pressed all "Hidden Buttons" listed in this property will be shown as long as the mouse is held down.
+When the mouse releases, the command of the button below the mouse is executed.
+`group` can contain multiple Button definitions thouse must be separated via '#' symbol. 
+(see the "Key Z" button group in the example above)
 
-# Commands
+In the exaple above, the "Undo" and "Redo" Buttons are only shown, if the "Z" Button is pressed down.
+
+# Commands 
 Each button can trigger one or more commands.
 Each command consists of the first keyword followed by the words parameter.
 
