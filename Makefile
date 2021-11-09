@@ -16,7 +16,7 @@ LIBS:= -L./modules/RGSDL/lib -lRGSDL -lSDL2main -lSDL2 -lSDL2_image
 COMMON_FLAGS:=-I./modules -std=c++2a -Wno-unknown-pragmas -Wno-reorder
 
 DEBUG_FLAGS:=-Wall -g -DDEBUG_BUILD
-RELEASE_FLAGS:=-mwindows 
+RELEASE_FLAGS:= #-mwindows 
 
 CPPFILES:=$(shell find ./src -name *.cpp | xargs)
 OBJFILES:=$(patsubst ./%.cpp,build/%.o,$(CPPFILES))

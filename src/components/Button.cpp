@@ -5,9 +5,7 @@ namespace Components {
 
     Button::Button()
         : col( { 0, 0, 0, 255 } ), rect( { -1, -1, 1, 1 } ), command( "" )
-    {
-    }
-
+    { }
 
     ButtonList* Button::nextButtonList(ButtonList* def) { return def; };
 
@@ -17,5 +15,9 @@ namespace Components {
         game->setDrawColor( col );
         game->fillRect( rect );
     }
+
+    bool Button::resetMouseOnClick() { return true; }
+
+    void Button::onUpdate(RGSDL::Engine* game) {}
 
 } // namespace Components

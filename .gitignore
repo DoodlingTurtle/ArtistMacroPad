@@ -3,3 +3,4 @@ build
 .vimspector.json
 debug.main
 .clang-format
+release

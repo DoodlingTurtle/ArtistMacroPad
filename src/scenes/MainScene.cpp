@@ -3,12 +3,9 @@
 #include <RGSDL/Utils.h>
 
 namespace Scenes {
-    MainScene::MainScene( const char* windowclass, RGSDL::Utils::IniType* ini, float ww, float wh )
-        : windowclass( windowclass ), ini( ini ),
-          prefix(
-              " search --onlyvisible " + std::string( windowclass ) + " windowactivate --sync" ),
-          suffix( " mousemove_relative --sync 1 1) &" ), winWidthMultiplyer( ww ),
-          winHeightMultiplyer( wh )
+    MainScene::MainScene( const RGSDL::Utils::IniType* ini, float ww, float wh )
+        : ini( ini ), prefix( "" ), suffix( " mousemove_relative --sync 1 1) &" ), windowid( "" ),
+          winWidthMultiplyer( ww ), winHeightMultiplyer( wh )
     {
     }
 
@@ -18,19 +15,14 @@ namespace Scenes {
         button_label          = game->createTextlayer( font, "Label", 5, 12, 12, 3 );
         game->backgroundColor = { 64, 16, 64, 255 };
 
-        for ( auto btn : *ini ) {
-            if ( btn.first.at( 0 ) == '#' ) continue;
-            Components::ButtonManager::registerButton(
-                game, winWidthMultiplyer, winHeightMultiplyer, button_label, btn.first,
-                btn.second );
-        }
+        Components::ButtonManager::registerButton(
+            game, winWidthMultiplyer, winHeightMultiplyer, button_label, *ini );
 
         return true;
     }
 
     RGSDL::Scene* MainScene::onEnd( RGSDL::Engine* game )
     {
-
         game->destroyTextlayer( button_label );
         game->destroyTexture( font );
         Components::ButtonManager::clearAll();
@@ -41,28 +33,42 @@ namespace Scenes {
     bool MainScene::onUpdate( RGSDL::Engine* game, float deltaTime )
     {
 
-        std::string command = "";
-        if ( Components::ButtonManager::updateAll( game, command ) ) {
+        int         x, y;
+        std::string command    = "";
+        bool        resetMouse = true;
 
-            std::string finalcommand = "(xdotool mousemove --sync " +
-                                       std::to_string( mouseHistory[ 0 ].x ) + " " +
-                                       std::to_string( mouseHistory[ 0 ].y ) + suffix;
+        SDL_GetGlobalMouseState( &x, &y );
 
-            system( finalcommand.c_str() );
+        if ( Components::ButtonManager::updateAll( game, command, resetMouse ) ) {
+
+            std::string finalcommand = "";
+
+            if ( resetMouse ) {
+                finalcommand = "(xdotool mousemove --sync " +
+                               std::to_string( mouseHistory[ 0 ].x ) + " " +
+                               std::to_string( mouseHistory[ 0 ].y ) + suffix;
+
+                system( finalcommand.c_str() );
+            }
 
             if ( command.length() > 0 ) {
-                finalcommand =
-                    "(xdotool mousemove --sync " + std::to_string( mouseHistory[ 0 ].x ) + " " +
-                    std::to_string( mouseHistory[ 0 ].y ) + " " + prefix + command + suffix;
+
+                std::vector<std::string> stdout;
+                RGSDL::Utils::exec(
+                    "xdotool mousemove --sync " + std::to_string( mouseHistory[ 0 ].x ) + " " +
+                        std::to_string( mouseHistory[ 0 ].y ) +
+                        " getmouselocation --shell | grep WINDOW | cut "
+                        "-d\"=\" -f2",
+                    &stdout, true);
+                if ( stdout.size() ) windowid = stdout[ 0 ];
+
+                finalcommand = "(xdotool windowactivate --sync " + windowid + command + suffix;
 
                 Debug( "Send Command: " << finalcommand );
                 system( finalcommand.c_str() );
             }
         }
         else {
-            int x, y;
-            SDL_GetGlobalMouseState( &x, &y );
-
             if ( x < game->windowPosition.x || x > game->windowPosition.x + game->windowSize.x ||
                  y < game->windowPosition.y || y > game->windowPosition.y + game->windowSize.y ) {
 
