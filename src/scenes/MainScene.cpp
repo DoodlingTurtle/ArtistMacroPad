@@ -12,7 +12,7 @@ namespace Scenes {
     bool MainScene::onStart( RGSDL::Engine* game )
     {
         // Separate Mouse and Touch
-        game->mergeMouseAndTouch(false);
+        game->mergeMouseAndTouch( false );
 
         font                  = game->loadTexture( "./assets/gnsh-bitmapfont-colour8.png" );
         button_label          = game->createTextlayer( font, "Label", 5, 12, 12, 3 );
@@ -43,16 +43,6 @@ namespace Scenes {
 
         if ( Components::ButtonManager::updateAll( game, command, resetMouse ) ) {
 
-            std::string finalcommand = "";
-
-            if ( resetMouse ) {
-                finalcommand = "(xdotool mousemove --sync " +
-                               std::to_string( mouseHistory[ 0 ].x ) + " " +
-                               std::to_string( mouseHistory[ 0 ].y ) + suffix;
-
-                system( finalcommand.c_str() );
-            }
-
             if ( command.length() > 0 ) {
 
                 std::vector<std::string> stdout;
@@ -61,10 +51,10 @@ namespace Scenes {
                         std::to_string( mouseHistory[ 0 ].y ) +
                         " getmouselocation --shell | grep WINDOW | cut "
                         "-d\"=\" -f2",
-                    &stdout, true);
+                    &stdout, true );
                 if ( stdout.size() ) windowid = stdout[ 0 ];
 
-                finalcommand = "(xdotool windowactivate --sync " + windowid + command + suffix;
+                std::string finalcommand = "(xdotool windowactivate --sync " + windowid + command + suffix;
 
                 Debug( "Send Command: " << finalcommand );
                 system( finalcommand.c_str() );
