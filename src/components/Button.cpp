@@ -18,6 +18,6 @@ namespace Components {
 
     bool Button::resetMouseOnClick() { return true; }
 
-    void Button::onUpdate(RGSDL::Engine* game) {}
+    void Button::onUpdate(RGSDL::Engine* game, RGSDL::Vec2<int> pointerCoords ) {}
 
 } // namespace Components

@@ -33,7 +33,7 @@ run: debug
 
 release:FLAGS:=$(COMMON_FLAGS) $(RELEASE_FLAGS)
 release: $(OBJFILES)
-	$(CPP) $^ $(FLAGS) $(LIBS) -o $(TARGET)
+	$(CPP) $^ $(FLAGS) $(LIBS) -o ArtistMacroPad 
 
 build/%.o: ./%.cpp
 	$(shell mkdir -p `dirname $@`)

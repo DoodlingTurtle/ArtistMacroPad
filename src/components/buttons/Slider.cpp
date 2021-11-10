@@ -93,7 +93,7 @@ namespace Components::Buttons {
     ButtonList* Slider::nextButtonList( ButtonList* def ) { return def; };
     bool        Slider::resetMouseOnClick() { return false; }
 
-    void Slider::onUpdate( RGSDL::Engine* game )
+    void Slider::onUpdate( RGSDL::Engine* game, RGSDL::Vec2<int> pointerCoords )
     {
         SDL_Rect rect;
         selected = 0;
@@ -101,8 +101,8 @@ namespace Components::Buttons {
         for ( int a = 0; a < buttonActiveRenders.size(); a++ ) {
             rect = buttonActiveRenders.at( a ).position;
 
-            if ( game->mousePosition.x > rect.x && game->mousePosition.x < rect.x + rect.w &&
-                 game->mousePosition.y > rect.y && game->mousePosition.y < rect.y + rect.h ) {
+            if ( pointerCoords.x > rect.x && pointerCoords.x < rect.x + rect.w &&
+                 pointerCoords.y > rect.y && pointerCoords.y < rect.y + rect.h ) {
 
                 selected = a + 1;
                 return;

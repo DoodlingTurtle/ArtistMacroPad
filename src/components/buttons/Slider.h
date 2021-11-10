@@ -26,7 +26,7 @@ namespace Components::Buttons {
         ButtonList* nextButtonList( ButtonList* def ) override;
         bool        resetMouseOnClick() override;
         void        draw( RGSDL::Engine* game ) override;
-        void        onUpdate( RGSDL::Engine* game ) override;
+        void        onUpdate( RGSDL::Engine* game, RGSDL::Vec2<int> pointerCoords ) override;
 
       private:
         int                  selected = 0;

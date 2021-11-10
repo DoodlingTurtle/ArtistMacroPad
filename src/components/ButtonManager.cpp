@@ -29,15 +29,23 @@ namespace Components::ButtonManager {
 
     bool updateAll( RGSDL::Engine* game, std::string& sendcommand, bool& resetMousePositionOnClick )
     {
-        bool mouseDown =
-            game->mousePressed( SDL_BUTTON_LEFT ) || game->mouseHeld( SDL_BUTTON_LEFT );
+        
+        bool mouseDown = false;
+        RGSDL::Vec2<int> fingerPos(-1);
+        auto finger = game->touchHeld.begin();
+        if(finger != game->touchHeld.end()) {
+            fingerPos = game->touchPositions[*finger];
+            Debug("input_finger ("<<game->touchHeld.size()<<"): " << game->touchPositions[*finger]);
+            Debug("input_mouse: "<< game->mousePosition);
+            mouseDown = true;
+        }
 
         if ( mouseDown ) {
             for ( auto btn : *button_list ) {
-                if ( game->mousePosition.x > btn.second->rect.x &&
-                     game->mousePosition.x < btn.second->rect.x + btn.second->rect.w &&
-                     game->mousePosition.y > btn.second->rect.y &&
-                     game->mousePosition.y < btn.second->rect.y + btn.second->rect.h ) {
+                if ( fingerPos.x > btn.second->rect.x &&
+                     fingerPos.x < btn.second->rect.x + btn.second->rect.w &&
+                     fingerPos.y > btn.second->rect.y &&
+                     fingerPos.y < btn.second->rect.y + btn.second->rect.h ) {
                     if ( btn.second->onDown() ) {
                         if ( active_button ) sendcommand += active_button->onUp();
 
@@ -49,7 +57,7 @@ namespace Components::ButtonManager {
                 }
             }
 
-            if(active_button) active_button->onUpdate(game);
+            if(active_button) active_button->onUpdate(game, fingerPos);
 
             resetMousePositionOnClick = false;
             return true;

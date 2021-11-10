@@ -15,7 +15,7 @@ namespace Components {
         virtual std::unordered_map<std::string, Button*>*
                             nextButtonList( std::unordered_map<std::string, Button*>* def );
         virtual std::string onUp() = 0;
-        virtual void onUpdate(RGSDL::Engine* game);
+        virtual void onUpdate(RGSDL::Engine* game, RGSDL::Vec2<int> pointerCoords );
         virtual bool resetMouseOnClick();
 
         std::string command;

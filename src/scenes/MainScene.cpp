@@ -11,13 +11,15 @@ namespace Scenes {
 
     bool MainScene::onStart( RGSDL::Engine* game )
     {
+        // Separate Mouse and Touch
+        game->mergeMouseAndTouch(false);
+
         font                  = game->loadTexture( "./assets/gnsh-bitmapfont-colour8.png" );
         button_label          = game->createTextlayer( font, "Label", 5, 12, 12, 3 );
         game->backgroundColor = { 64, 16, 64, 255 };
 
         Components::ButtonManager::registerButton(
             game, winWidthMultiplyer, winHeightMultiplyer, button_label, *ini );
-
         return true;
     }
 
