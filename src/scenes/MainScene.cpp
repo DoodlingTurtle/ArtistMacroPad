@@ -5,8 +5,9 @@
 namespace Scenes {
     MainScene::MainScene( const RGSDL::Utils::IniType* ini, float ww, float wh )
         : RGSDL::Scene(true), ini( ini ), prefix( "" ), suffix( " mousemove_relative --sync 1 1) &" ), windowid( "" ),
-          winWidthMultiplyer( ww ), winHeightMultiplyer( wh ), nextProfile("")
+          winWidthMultiplyer( ww ), winHeightMultiplyer( wh ), nextProfile(""), mouseHistory()
     {
+        mouseHistory.push_back({0, 0});
     }
 
     bool MainScene::onStart( RGSDL::Engine* game )
