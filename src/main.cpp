@@ -10,12 +10,12 @@ using namespace RGSDL;
 
 int main( int argc, char** argv )
 {
-    if ( argc != 2 ) {
-        Error( "Usage: " << argv[ 0 ] << " profile INI file" );
-        return 0;
+    std::string nextWindow = "./default.ini";
+    if ( argc == 2 ) {
+        nextWindow = argv[ 1 ];
     }
+
     int ret = 0;
-    std::string nextWindow = argv[ 1 ];
 
     while ( nextWindow.length() > 0 ) {
 
