@@ -29,14 +29,12 @@ namespace Components::ButtonManager {
 
     bool updateAll( RGSDL::Engine* game, std::string& sendcommand, bool& resetMousePositionOnClick )
     {
-        
-        bool mouseDown = false;
-        RGSDL::Vec2<int> fingerPos(-1);
-        auto finger = game->touchHeld.begin();
-        if(finger != game->touchHeld.end()) {
-            fingerPos = game->touchPositions[*finger];
-            Debug("input_finger ("<<game->touchHeld.size()<<"): " << game->touchPositions[*finger]);
-            Debug("input_mouse: "<< game->mousePosition);
+
+        bool             mouseDown = false;
+        RGSDL::Vec2<int> fingerPos( -1 );
+        auto             finger = game->touchHeld.begin();
+        if ( finger != game->touchHeld.end() ) {
+            fingerPos = game->touchPositions[ *finger ];
             mouseDown = true;
         }
 
@@ -57,7 +55,7 @@ namespace Components::ButtonManager {
                 }
             }
 
-            if(active_button) active_button->onUpdate(game, fingerPos);
+            if ( active_button ) active_button->onUpdate( game, fingerPos );
 
             resetMousePositionOnClick = false;
             return true;
@@ -103,6 +101,10 @@ namespace Components::ButtonManager {
                 else if ( action[ 0 ] == "term" ) {
                     finalcommand += " && " + action[ 1 ] + " && xdotool ";
                 }
+                else if ( action[ 0 ] == "profile" ) {
+                    finalcommand = "#" + action[ 1 ];
+                    break;
+                }
                 else if ( action[ 0 ] == "point" ) {
                     finalcommand += " mousemove_relative --sync " + action[ 1 ];
                 }
@@ -128,7 +130,9 @@ namespace Components::ButtonManager {
 
             std::string grp = RGSDL::Utils::readIniGroupValue( iniGrp, "group", "" );
 
-            if ( grp != "" ) btn = new Components::Buttons::Slider( game, grp, ini, winWidth, winHeight, text_layer );
+            if ( grp != "" )
+                btn = new Components::Buttons::Slider(
+                    game, grp, ini, winWidth, winHeight, text_layer );
             else
                 btn = new Components::Buttons::Default();
 

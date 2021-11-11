@@ -4,8 +4,8 @@
 
 namespace Scenes {
     MainScene::MainScene( const RGSDL::Utils::IniType* ini, float ww, float wh )
-        : ini( ini ), prefix( "" ), suffix( " mousemove_relative --sync 1 1) &" ), windowid( "" ),
-          winWidthMultiplyer( ww ), winHeightMultiplyer( wh )
+        : RGSDL::Scene(true), ini( ini ), prefix( "" ), suffix( " mousemove_relative --sync 1 1) &" ), windowid( "" ),
+          winWidthMultiplyer( ww ), winHeightMultiplyer( wh ), nextProfile("")
     {
     }
 
@@ -20,6 +20,7 @@ namespace Scenes {
 
         Components::ButtonManager::registerButton(
             game, winWidthMultiplyer, winHeightMultiplyer, button_label, *ini );
+
         return true;
     }
 
@@ -34,7 +35,6 @@ namespace Scenes {
 
     bool MainScene::onUpdate( RGSDL::Engine* game, float deltaTime )
     {
-
         int         x, y;
         std::string command    = "";
         bool        resetMouse = true;
@@ -42,22 +42,26 @@ namespace Scenes {
         SDL_GetGlobalMouseState( &x, &y );
 
         if ( Components::ButtonManager::updateAll( game, command, resetMouse ) ) {
-
             if ( command.length() > 0 ) {
+                if(command.at(0) == '#') {
+                    nextProfile = command.substr(1);
+                    return false;
+                }
+                else {
+                    std::vector<std::string> stdout;
+                    RGSDL::Utils::exec(
+                        "xdotool mousemove --sync " + std::to_string( mouseHistory[ 0 ].x ) + " " +
+                            std::to_string( mouseHistory[ 0 ].y ) +
+                            " getmouselocation --shell | grep WINDOW | cut "
+                            "-d\"=\" -f2",
+                        &stdout, true );
+                    if ( stdout.size() ) windowid = stdout[ 0 ];
 
-                std::vector<std::string> stdout;
-                RGSDL::Utils::exec(
-                    "xdotool mousemove --sync " + std::to_string( mouseHistory[ 0 ].x ) + " " +
-                        std::to_string( mouseHistory[ 0 ].y ) +
-                        " getmouselocation --shell | grep WINDOW | cut "
-                        "-d\"=\" -f2",
-                    &stdout, true );
-                if ( stdout.size() ) windowid = stdout[ 0 ];
+                    std::string finalcommand = "(xdotool windowactivate --sync " + windowid + command + suffix;
 
-                std::string finalcommand = "(xdotool windowactivate --sync " + windowid + command + suffix;
-
-                Debug( "Send Command: " << finalcommand );
-                system( finalcommand.c_str() );
+                    Debug( "Send Command: " << finalcommand );
+                    system( finalcommand.c_str() );
+                }
             }
         }
         else {
@@ -72,5 +76,7 @@ namespace Scenes {
         return keep_running;
     }
     void MainScene::onDraw( RGSDL::Engine* game ) { Components::ButtonManager::drawAll( game ); }
+
+    std::string MainScene::getNextProfile() { return nextProfile; }
 
 } // namespace Scenes
