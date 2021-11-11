@@ -2,10 +2,10 @@
 An application inspired by the Windows only TabletPro ArtistPad.
 Basically an artist pad for linux.
 
-This application is optimized for Linux Tablets and Touchscreens, that see the TouchScreen only as an ordinary mouse.
-(meaning I can't garantie it will work for Linux Tablets that have propper multi touch drivers).
+This application is optimized for Linux Tablets and Touchscreens you will need to install touch drivers for your Device.
+(meaning I can't garantie it will work on all Linux installations, but it is free, so there is nothing to lose by trying 😉).
 
-As the backend for this application I'm using xdotool to send mouse and keyboard command to X-Server.
+As the backend for this application I'm using xdotool to send mouse and keyboard command to the X-Server.
 
 This application is still in a very early alpha stage so if you want to help me to squash bugs, I would be more then happy about feedback. Either here on github or on Twitter @TurtleDoodling
 
