@@ -59,6 +59,8 @@ namespace Components::Buttons {
 
     bool Slider::onDown()
     {
+        selected = 0;
+
         game->switchLayer( layer_SlideOver_BG );
         game->clear();
         for ( auto btn : buttonRenders ) {
