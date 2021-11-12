@@ -11,7 +11,8 @@
 #define layer_SlideOver_BG     253
 #define layer_Labels           252
 #define layer_Active           251
-#define layer_BG               250
+#define layer_Toggle           250
+#define layer_BG               249
 
 #define winDim( key, def, mult ) \
     static_cast<int>( \
@@ -35,7 +36,7 @@ namespace Components::ButtonManager {
     bool
         updateAll( RGSDL::Engine* game, std::string& sendcommand, bool& resetMousePositionOnClick );
 
-    std::string parseCommand( std::string rawcommand );
+    std::string parseCommand( std::string rawcommand, std::string* cleanupCommand = nullptr );
 
     void clearAll();
 

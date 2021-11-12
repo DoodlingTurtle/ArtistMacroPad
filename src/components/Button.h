@@ -19,6 +19,7 @@ namespace Components {
         virtual bool resetMouseOnClick();
 
         std::string command;
+        std::string cleanupCommand;
 
         SDL_Rect  rect;
         SDL_Color col;

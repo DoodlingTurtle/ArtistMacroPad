@@ -150,11 +150,15 @@ available words are:
  - `keyup` releases a pressed key
  - `sleep` waits for a number of seconds (the number is a float, so you can do `sleep 0.5` for a break of half a second)
  - `term` will allow you to execute any shell command you want **as said previously be carefull with profiles you did not write your self**
+
+ - `toggle` can only be used for shift, ctrl and alt. The given key stays pressed until the next key is pressed. The toggled key will stay pressed, until the nex command is resolved. You can click the key a second time to release the toggle. Pressing it a third time after that, will have no effect.
+
  - `profile` followed by a path to a new profile will switch and load that profile. This command takes priority over all other chained commands. For example in
  ```ini
  command = key a # profile ./otherapplication.ini # sleep 1
+
+the `key a` and `sleep 1` will be ignored.
  ```
- the `key a` and `sleep 1` will be ignored.
 
 All `key...` commands follow the xdotool guidelines.
 https://manpages.ubuntu.com/manpages/trusty/man1/xdotool.1.html

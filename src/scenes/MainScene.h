@@ -27,7 +27,7 @@ namespace Scenes {
         const RGSDL::Utils::IniType* ini;
         RGSDL::Texture               font;
         RGSDL::UI::Textlayer         button_label;
-        unsigned long int            mouseHistoryLimit = 1;
+        unsigned long int            mouseHistoryLimit = 3;
         std::vector<mousePos>        mouseHistory;
         std::string                  nextProfile;
 

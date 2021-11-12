@@ -4,10 +4,11 @@
 namespace Components {
 
     Button::Button()
-        : col( { 0, 0, 0, 255 } ), rect( { -1, -1, 1, 1 } ), command( "" )
-    { }
+        : col( { 0, 0, 0, 255 } ), rect( { -1, -1, 1, 1 } ), command( "" ), cleanupCommand( "" )
+    {
+    }
 
-    ButtonList* Button::nextButtonList(ButtonList* def) { return def; };
+    ButtonList* Button::nextButtonList( ButtonList* def ) { return def; };
 
     void Button::draw( RGSDL::Engine* game )
     {
@@ -18,6 +19,6 @@ namespace Components {
 
     bool Button::resetMouseOnClick() { return true; }
 
-    void Button::onUpdate(RGSDL::Engine* game, RGSDL::Vec2<int> pointerCoords ) {}
+    void Button::onUpdate( RGSDL::Engine* game, RGSDL::Vec2<int> pointerCoords ) {}
 
 } // namespace Components

@@ -9,8 +9,11 @@ namespace Components::ButtonManager {
 
     static Components::Button*      active_button = nullptr;
     static std::vector<std::string> command_chain = std::vector<std::string>();
-    static std::unordered_map<std::string, Components::Button*>* button_list = &button_instances;
-    void                                                         clearAll()
+    static std::unordered_map<std::string, Components::Button*>* button_list  = &button_instances;
+    static std::string                                           nextCleanup  = "";
+    static SDL_FingerID                                          currentTouch = 0;
+
+    void clearAll()
     {
         for ( auto b : button_instances )
             delete b.second;
@@ -32,10 +35,25 @@ namespace Components::ButtonManager {
 
         bool             mouseDown = false;
         RGSDL::Vec2<int> fingerPos( -1 );
-        auto             finger = game->touchHeld.begin();
-        if ( finger != game->touchHeld.end() ) {
-            fingerPos = game->touchPositions[ *finger ];
-            mouseDown = true;
+
+        if ( currentTouch == 0 ) {
+            auto finger = game->touchPressed.begin();
+            if ( finger != game->touchPressed.end() ) {
+                currentTouch = *finger;
+                mouseDown    = true;
+                fingerPos    = game->touchPositions[ currentTouch ];
+            }
+        }
+        else {
+            auto finger = game->touchPositions.find( currentTouch );
+            if ( finger == game->touchPositions.end() ) {
+                mouseDown = false;
+                currentTouch = 0;
+            }
+            else {
+                mouseDown = true;
+                fingerPos = game->touchPositions[ currentTouch ];
+            }
         }
 
         if ( mouseDown ) {
@@ -62,18 +80,28 @@ namespace Components::ButtonManager {
         }
         else {
             if ( active_button ) {
-                sendcommand += active_button->onUp();
+                sendcommand += active_button->onUp() + nextCleanup;
+                nextCleanup = active_button->cleanupCommand;
+
                 resetMousePositionOnClick = true;
-                active_button             = nullptr;
-                button_list               = &button_instances;
+                game->switchLayer( layer_Toggle );
+                game->clear();
+
+                if ( nextCleanup.length() > 0 ) {
+                    game->setDrawColor( active_button->col );
+                    game->fillRect( active_button->rect );
+                }
+
+                active_button = nullptr;
+                button_list   = &button_instances;
                 return true;
             }
 
             return false;
         }
-    }
+    } // namespace Components::ButtonManager
 
-    std::string parseCommand( std::string rawcommand )
+    std::string parseCommand( std::string rawcommand, std::string* cleanUpCommand )
     {
         if ( rawcommand.length() == 0 ) return rawcommand;
 
@@ -81,10 +109,8 @@ namespace Components::ButtonManager {
         std::vector<std::string> action;
         std::string              finalcommand = "";
 
-        int splits = RGSDL::Utils::stringSplit( rawcommand, "#", splitcommands );
-
+        RGSDL::Utils::stringSplit( rawcommand, "#", splitcommands );
         Debug( "Raw Command: " << rawcommand );
-        Debug( "splitting command: " << splits );
 
         for ( auto commandline : splitcommands ) {
             action.clear();
@@ -93,10 +119,21 @@ namespace Components::ButtonManager {
 
             if ( action.size() == 2 ) {
                 Debug( "command: " << action[ 0 ] << " => " << action[ 1 ] );
-
                 if ( action[ 0 ] == "keydown" || action[ 0 ] == "keyup" || action[ 0 ] == "key" ||
                      action[ 0 ] == "sleep" ) {
                     finalcommand += " " + action[ 0 ] + " " + action[ 1 ];
+                }
+                else if ( action[ 0 ] == "term" ) {
+                    finalcommand += " && " + action[ 1 ] + " && xdotool ";
+                }
+                else if ( action[ 0 ] == "toggle" ) {
+                    if ( cleanUpCommand ) cleanUpCommand->append( " keyup " + action[ 1 ] );
+                    else
+                        throw "toogle commands are not allowed for grouped buttons";
+                    if ( action[ 1 ] == "shift" || action[ 1 ] == "ctrl" || action[ 1 ] == "alt" )
+                        finalcommand += " keydown " + action[ 1 ];
+                    else
+                        throw "only alt, ctrl and shift can be toggled";
                 }
                 else if ( action[ 0 ] == "term" ) {
                     finalcommand += " && " + action[ 1 ] + " && xdotool ";
@@ -160,8 +197,11 @@ namespace Components::ButtonManager {
             text_layer->draw( game );
 
             std::string str = RGSDL::Utils::readIniGroupValue( iniGrp, "command", "btn" );
-            btn->command    = parseCommand( str );
-            btn->rect       = rect;
+            std::string cleanupCommand = "";
+            btn->command               = parseCommand( str, &cleanupCommand );
+            btn->cleanupCommand        = cleanupCommand;
+
+            btn->rect = rect;
 
             col.r    = 255 - col.r;
             col.g    = 255 - col.g;
