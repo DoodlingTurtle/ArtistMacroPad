@@ -71,9 +71,11 @@ namespace Components::Buttons {
         game->switchLayer( layer_SlideOver_Labels );
         game->clear();
         for ( auto btn : buttonRenders ) {
-            text_layer->setText(btn.label.c_str());
-            text_layer->setPosition(btn.position.x, btn.position.y);
-            text_layer->draw(game);
+            text_layer->setText( btn.label.c_str() );
+            text_layer->setPosition(
+                btn.position.x + ( btn.position.w - text_layer->getTextPXWidth() ) / 2,
+                btn.position.y + ( btn.position.h - text_layer->getTextPXHeight() ) / 2 );
+            text_layer->draw( game );
         }
 
         game->switchLayer( layer_SlideOver_Active );

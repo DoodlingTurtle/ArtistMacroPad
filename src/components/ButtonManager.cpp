@@ -47,7 +47,7 @@ namespace Components::ButtonManager {
         else {
             auto finger = game->touchPositions.find( currentTouch );
             if ( finger == game->touchPositions.end() ) {
-                mouseDown = false;
+                mouseDown    = false;
                 currentTouch = 0;
             }
             else {
@@ -193,7 +193,12 @@ namespace Components::ButtonManager {
             game->switchLayer( layer_Labels );
             text_layer->setText(
                 RGSDL::Utils::readIniGroupValue( iniGrp, "label", "btn" ).c_str() );
-            text_layer->setPosition( rect.x, rect.y );
+
+            ;
+
+            text_layer->setPosition(
+                rect.x + ( rect.w - text_layer->getTextPXWidth() ) / 2,
+                rect.y + ( rect.h - text_layer->getTextPXHeight() ) / 2 );
             text_layer->draw( game );
 
             std::string str = RGSDL::Utils::readIniGroupValue( iniGrp, "command", "btn" );
