@@ -84,8 +84,8 @@ int main( int argc, char** argv )
             system( ("mkdir -p " + DIR_WINDOW_SIZE_CONFIG).c_str() );
             Utils::IniType cfg = { { "window",
                                      {
-                                         { "x", std::to_string( game.windowPosition.x ) },
-                                         { "y", std::to_string( game.windowPosition.y ) },
+                                         { "x", std::to_string( game.trueWindowPosition.x ) },
+                                         { "y", std::to_string( game.trueWindowPosition.y ) },
                                          { "w", std::to_string( game.windowSize.x ) },
                                          { "h", std::to_string( game.windowSize.y ) },
                                      } } };
