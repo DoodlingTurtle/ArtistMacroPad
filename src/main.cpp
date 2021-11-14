@@ -7,6 +7,8 @@
 
 #include <cstdlib>
 
+#define DIR_WINDOW_SIZE_CONFIG std::string( getenv( "HOME" ) ) + "/.config/ArtistMacroPad/windows/"
+
 using namespace RGSDL;
 
 int main( int argc, char** argv )
@@ -18,6 +20,8 @@ int main( int argc, char** argv )
 
     while ( nextWindow.length() > 0 ) {
         Engine game;
+
+        Debug( getenv( "HOME" ) );
 
         // Reset window config values
         winWidth  = 0;
@@ -47,7 +51,8 @@ int main( int argc, char** argv )
         // Read Window User-Config
         Utils::IniType winConfig;
         if ( Utils::readIni(
-                 "./config/" + Utils::stringReplace( nextWindow, "/", "_" ), winConfig ) ) {
+                 DIR_WINDOW_SIZE_CONFIG + Utils::stringReplace( nextWindow, "/", "_" ),
+                 winConfig ) ) {
 
             win       = Utils::readIniGroup( winConfig, "window" );
             winX      = Utils::readIniGroupInt( win, "x", 0 );
@@ -60,13 +65,15 @@ int main( int argc, char** argv )
         winConfig.clear();
 
         if ( winWidth == 0 || winHeight == 0 ) {
-            winWidth = 0; winHeight = 0;
+            winWidth                   = 0;
+            winHeight                  = 0;
             game.scaleWindowToMatchDPI = true;
         }
 
         Scenes::MainScene* ms = nullptr;
         try {
-            ms = new Scenes::MainScene( ini, (float)viewWidth / 100.0f, (float)viewHeight / 100.0f );
+            ms =
+                new Scenes::MainScene( ini, (float)viewWidth / 100.0f, (float)viewHeight / 100.0f );
 
             ret = game.start(
                 argc, argv, viewWidth, viewHeight, 96.0f,
@@ -74,7 +81,7 @@ int main( int argc, char** argv )
                 SDL_WINDOW_ALWAYS_ON_TOP, winX, winY, winWidth, winHeight );
 
             // Save Window Position and Size for next time
-            system( "mkdir -p ./config" );
+            system( ("mkdir -p " + DIR_WINDOW_SIZE_CONFIG).c_str() );
             Utils::IniType cfg = { { "window",
                                      {
                                          { "x", std::to_string( game.windowPosition.x ) },
@@ -82,7 +89,8 @@ int main( int argc, char** argv )
                                          { "w", std::to_string( game.windowSize.x ) },
                                          { "h", std::to_string( game.windowSize.y ) },
                                      } } };
-            Utils::writeIni( "./config/" + Utils::stringReplace( nextWindow, "/", "_" ), cfg );
+            Utils::writeIni(
+                DIR_WINDOW_SIZE_CONFIG + Utils::stringReplace( nextWindow, "/", "_" ), cfg );
 
             nextWindow = "";
             nextWindow = ms->getNextProfile();
