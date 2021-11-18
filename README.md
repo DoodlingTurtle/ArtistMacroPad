@@ -36,9 +36,9 @@ if you want to start the AMP with as specific window in mind, you can call the `
 For example for blender or for kdenlive:
 ```bash
 cd [directory where you have saved the AMP application]
-./debug.main ./assets/Blender.ini
+./ArtistMacroPad ./assets/Blender.ini
 or
-./debug.main ./assets/kdenlive.ini
+./ArtistMacroPad ./assets/shotcut.ini
 ```
 if the file you want to use does not exist, the application will let you know.
 Example:
@@ -57,6 +57,7 @@ here is an example for what a profile ini could look like:
 [window]
 width = 96
 height = 480
+percentmessurements = true
 
 [Frame Left]
 label = F - L 
@@ -97,8 +98,8 @@ b = 64
 [#Redo]
 label = Redo 
 command = key ctrl+shift+z
-x = 0
-y = 14
+x = 0 
+y = 0 
 w = 50
 h = 7
 r = 128 
@@ -114,16 +115,24 @@ So windows get scaled up on high dpi displays and scaled down for low dpi displa
 (This was made, so that the window will always have roughly the same visual size, when you look at it)
 You can also scale the window afterwards.
 
+by default a buttons `x`, `y`, `w` and `h` values will be read as "Pixel" coordinates.
+By defining `percentmessurements = true` these values will be read as percentage of the current viewport size
+
 ## Defing buttons
 Every ini group that is not `[window]` is defining a button. 
 
-The group name `[Press the left key]` is for readability. If you  define multiple groups with the same name, they will override each other. 
+The group name (example: `[Press the left key]`) is for readability. If you define multiple groups with the same name, they will override each other. 
 Groups that start with a `#` (example `[#hidden group/button]`) will be ignored.
 
+### button propertys
 `label` is what is shown on the buttons.
+`icon` can be used instead of label and points to a png graphic that is displayed instead of the labels text
 `command` will be executed, as soon as you interact with the button. (see the Command section for more details).
 
-`x`, `y`, `w`, `h` are the x/y position, with and height of the button inside the window area. all values are percentages from 0-100 (they need to be Integers though).
+`x`, `y`, `w`, `h` are the x/y position, with and height of the button inside the window area. depeding on if the `[window] percentmessurements` value is set, there values are read the following way:
+if it is defined => from 0-100 % (they need to be Integers though).
+if it is not defined => from 0 - `[window] width or height` px. 
+
 
 `r`, `g`, `b` are for red, green and blue these values are from 0 - 255 and define the color of the button.
 They are optional if they are not set, they will be given the value 96
@@ -135,6 +144,8 @@ If the Button is pressed all "Hidden Buttons" listed in this property will be sh
 When the mouse releases, the command of the button below the mouse is executed.
 `group` can contain multiple Button definitions thouse must be separated via '#' symbol. 
 (see the "Key Z" button group in the example above)
+
+A Button that is part of a group will be positioned relative to its grouping button.
 
 In the exaple above, the "Undo" and "Redo" Buttons are only shown, if the "Z" Button is pressed down.
 

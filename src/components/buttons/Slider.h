@@ -1,42 +1,47 @@
 #include "../Button.h"
 #include <RGSDL/Texture.h>
 
-namespace Components::Buttons {
+namespace Components::Buttons
+{
 
-    class Slider : public Components::Button {
-      public:
-        struct SubButtonActive {
-            SDL_Rect  position;
+    class Slider : public Components::Button
+    {
+    public:
+        struct SubButtonActive
+        {
+            SDL_Rect position;
             SDL_Color color;
         };
 
-        struct SubButton {
-            SDL_Rect    position;
-            SDL_Color   color;
+        struct SubButton
+        {
+            SDL_Rect position;
+            SDL_Color color;
             std::string label;
+            std::string iconPath;
         };
 
         Slider(
-            RGSDL::Engine* game, const std::string& group, const RGSDL::Utils::IniType& ini,
+            RGSDL::Engine *game, const std::string &group, const RGSDL::Utils::IniType &ini,
             float withMultiplyer, float heightMultiplyer, RGSDL::UI::Textlayer text_layer);
         ~Slider();
 
-        bool        onDown() override;
+        bool onDown() override;
         std::string onUp() override;
-        ButtonList* nextButtonList( ButtonList* def ) override;
-        bool        resetMouseOnClick() override;
-        void        draw( RGSDL::Engine* game ) override;
-        void        onUpdate( RGSDL::Engine* game, RGSDL::Vec2<int> pointerCoords ) override;
+        ButtonList *nextButtonList(ButtonList *def) override;
+        bool resetMouseOnClick() override;
+        void draw(RGSDL::Engine *game) override;
+        void onUpdate(RGSDL::Engine *game, RGSDL::Vec2<int> pointerCoords) override;
 
-      private:
-        int                  selected = 0;
-        RGSDL::Engine*       game;
+    private:
+        int selected = 0;
+        RGSDL::Engine *game;
         RGSDL::UI::Textlayer text_layer;
-        RGSDL::Texture       buttonFaces;
+        RGSDL::Texture buttonFaces;
 
-        std::vector<SubButton>       buttonRenders;
+        std::vector<SubButton> buttonRenders;
         std::vector<SubButtonActive> buttonActiveRenders;
-        std::vector<std::string>     buttonCommands;
+        std::vector<std::string> buttonCommands;
     };
 
 } // namespace Components::Buttons
