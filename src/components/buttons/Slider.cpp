@@ -42,7 +42,8 @@ namespace Components::Buttons
 
                 buttonRenders.push_back(
                     {btnRect, btnCol,
-                     RGSDL::Utils::readIniGroupValue(iniGrp, "label", "btn"),
+                     RGSDL::Utils::stringReplace(
+                         RGSDL::Utils::readIniGroupValue(iniGrp, "label", "btn"), "#", "\n"),
                      RGSDL::Utils::readIniGroupValue(iniGrp, "icon", "")});
 
                 buttonActiveRenders.push_back(
@@ -71,10 +72,10 @@ namespace Components::Buttons
         {
             game->setDrawColor(btn.color);
             game->fillRect({
-                btn.position.x + this->rect.x,   
-                btn.position.y + this->rect.y,   
-                btn.position.w,   
-                btn.position.h,   
+                btn.position.x + this->rect.x,
+                btn.position.y + this->rect.y,
+                btn.position.w,
+                btn.position.h,
             });
         }
 
@@ -152,7 +153,7 @@ namespace Components::Buttons
             SDL_Rect pos = buttonActiveRenders.at(selected - 1).position;
             pos.x += this->rect.x;
             pos.y += this->rect.y;
-            game->setDrawColor( buttonActiveRenders.at(selected - 1).color);
+            game->setDrawColor(buttonActiveRenders.at(selected - 1).color);
             game->fillRect(pos);
         }
     }

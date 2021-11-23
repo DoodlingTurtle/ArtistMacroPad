@@ -9,6 +9,7 @@ namespace Components::ButtonManager
     static auto buttons_none = ButtonList();
 
     static Components::Button *active_button = nullptr;
+    static Components::Button *last_button = nullptr;
     static std::vector<std::string> command_chain = std::vector<std::string>();
     static std::unordered_map<std::string, Components::Button *> *button_list = &button_instances;
     static std::string nextCleanup = "";
@@ -18,6 +19,9 @@ namespace Components::ButtonManager
     {
         for (auto b : button_instances)
             delete b.second;
+
+        last_button = nullptr;
+        active_button = nullptr;
 
         button_instances.clear();
         command_chain.clear();
@@ -96,9 +100,13 @@ namespace Components::ButtonManager
             if (active_button)
             {
                 sendcommand += active_button->onUp() + nextCleanup;
-                nextCleanup = active_button->cleanupCommand;
+                if (active_button == last_button)
+                    nextCleanup = "";
+                else
+                    nextCleanup = active_button->cleanupCommand;
 
                 resetMousePositionOnClick = true;
+
                 game->switchLayer(layer_Toggle);
                 game->clear();
 
@@ -108,6 +116,7 @@ namespace Components::ButtonManager
                     game->fillRect(active_button->rect);
                 }
 
+                last_button = active_button;
                 active_button = nullptr;
                 button_list = &button_instances;
                 return true;
@@ -218,10 +227,6 @@ namespace Components::ButtonManager
             game->fillRect(rect);
 
             game->switchLayer(layer_Labels);
-            text_layer->setText(
-                RGSDL::Utils::readIniGroupValue(iniGrp, "label", "btn").c_str());
-
-            ;
 
             RGSDL::Texture tx;
             std::string icon = RGSDL::Utils::readIniGroupValue(iniGrp, "icon", "");
@@ -229,7 +234,7 @@ namespace Components::ButtonManager
             {
                 tx = game->loadTexture(icon.c_str());
                 tx.draw({{(float)rect.x, (float)rect.y},
-                         {(int)-((float)(rect.w - tx.crop.w) / 2.0f), 
+                         {(int)-((float)(rect.w - tx.crop.w) / 2.0f),
                           (int)-((float)(rect.h - tx.crop.h) / 2.0f)},
                          {1.0f, 1.0f},
                          0.0f});
@@ -237,6 +242,13 @@ namespace Components::ButtonManager
             }
             else
             {
+                text_layer->setText(
+                    RGSDL::Utils::stringReplace(
+                        RGSDL::Utils::readIniGroupValue(
+                            iniGrp, "label", "btn"),
+                        "#", "\n")
+                        .c_str());
+
                 text_layer->setPosition(rect.x + (rect.w - text_layer->getTextPXWidth()) / 2,
                                         rect.y + (rect.h - text_layer->getTextPXHeight()) / 2);
                 text_layer->draw(game);
