@@ -31,13 +31,34 @@ namespace Components::Buttons
                 btnRect.w = winDim("w", 1, ww);
                 btnRect.h = winDim("h", 1, wh);
 
-                btnCol.r =
-                    static_cast<unsigned char>(RGSDL::Utils::readIniGroupInt(iniGrp, "r", 96));
-                btnCol.g =
-                    static_cast<unsigned char>(RGSDL::Utils::readIniGroupInt(iniGrp, "g", 96));
-                btnCol.b =
-                    static_cast<unsigned char>(RGSDL::Utils::readIniGroupInt(iniGrp, "b", 96));
+                std::string sBgCol = RGSDL::Utils::readIniGroupValue(iniGrp, "color", "");
 
+                if (sBgCol.length() > 0)
+                {
+
+                    if (sBgCol.at(0) == '#')
+                    {
+                        uint32_t colorValue = RGSDL::Utils::convertHex2Int(sBgCol.substr(1));
+                        btnCol.r = (unsigned char)((colorValue & 0xff0000) >> 16);
+                        btnCol.g = (unsigned char)((colorValue & 0x00ff00) >> 8);
+                        btnCol.b = (unsigned char)((colorValue & 0x0000ff));
+                    }
+                    else
+                    {
+                        btnCol.r = 96;
+                        btnCol.g = 96;
+                        btnCol.b = 96;
+                    }
+                }
+                else
+                {
+                    btnCol.r =
+                        static_cast<unsigned char>(RGSDL::Utils::readIniGroupInt(iniGrp, "r", 96));
+                    btnCol.g =
+                        static_cast<unsigned char>(RGSDL::Utils::readIniGroupInt(iniGrp, "g", 96));
+                    btnCol.b =
+                        static_cast<unsigned char>(RGSDL::Utils::readIniGroupInt(iniGrp, "b", 96));
+                }
                 btnCol.a = 255;
 
                 buttonRenders.push_back(
