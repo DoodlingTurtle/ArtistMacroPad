@@ -24,14 +24,11 @@ on Linux Mint / Ubuntu / Debian you can install them like so:
 sudo apt install libsdl2-dev libsdl2-image-dev xdotool
 ```
 
-after that, you can use the `launcher.sh` of this project, to start the application.
-
 # Defining a profile
-If you start the ArtistMacroPad (refered to as AMP from now on) you must give it a Profile to start. 
+Uppon launching the `ArtistMacroPad` executeable, the `default.ini` - Profile is loaded automatically.
+You can change the `defualt.ini` to add other profiles or buttons.
 
-The `laucher.sh` will allow you to select a Profile based on a Window you can select.
-
-if you want to start the AMP with as specific window in mind, you can call the `main` or `debug.main` binary and give the path to the profile - ini as the first parameter.
+If you want to start the ArtistMacroPad (refered to as AMP from now on) with as specific profile in mind, you can call the `ArtistMacroPad` binary and give the path to the profile - ini as the first parameter.
 
 For example for blender or for kdenlive:
 ```bash
@@ -40,7 +37,7 @@ cd [directory where you have saved the AMP application]
 or
 ./ArtistMacroPad ./assets/shotcut.ini
 ```
-if the file you want to use does not exist, the application will let you know.
+if the file, you want to use, does not exist, the application will let you know.
 Example:
 ```
 Error: Could not find ini file 'assets/Mate-terminal.ini'
@@ -58,6 +55,7 @@ here is an example for what a profile ini could look like:
 width = 96
 height = 480
 percentmessurements = true
+color = #601060
 
 [Frame Left]
 label = F - L 
@@ -91,9 +89,7 @@ x = 0
 y = 0
 w = 50
 h = 7
-r = 128 
-g = 0 
-b = 64 
+color = #800040
 
 [#Redo]
 label = Redo 
@@ -102,9 +98,7 @@ x = 0
 y = 0 
 w = 50
 h = 7
-r = 128 
-g = 0 
-b = 64 
+color = #800040
 ```
 
 ## The `[window]` section is mandetory
@@ -118,6 +112,8 @@ You can also scale the window afterwards.
 by default a buttons `x`, `y`, `w` and `h` values will be read as "Pixel" coordinates.
 By defining `percentmessurements = true` these values will be read as percentage of the current viewport size
 
+The `color` property contains a hex value defining a 24bit color value (see Button property `color` for mor information)
+
 ## Defing buttons
 Every ini group that is not `[window]` is defining a button. 
 
@@ -126,15 +122,26 @@ Groups that start with a `#` (example `[#hidden group/button]`) will be ignored.
 
 ### button propertys
 `label` is what is shown on the buttons.
-`icon` can be used instead of label and points to a png graphic that is displayed instead of the labels text
+`icon` can be used instead of label. It points to a png graphic that is displayed instead of the labels text
 `command` will be executed, as soon as you interact with the button. (see the Command section for more details).
 
 `x`, `y`, `w`, `h` are the x/y position, with and height of the button inside the window area. depeding on if the `[window] percentmessurements` value is set, there values are read the following way:
 if it is defined => from 0-100 % (they need to be Integers though).
 if it is not defined => from 0 - `[window] width or height` px. 
 
+`color` a 24bit hexadecimal value defining the color. 
+- Must have the format `#RRGGBB`. 
+- The default value is `#606060`
+- Must start with `#`. 
+- Example: 
+```
+color = #ff0000  = red button
+color = #00ff00  = green button
+color = #0000ff  = blue button
+color = #ffff00  = yelloa button
+```
 
-`r`, `g`, `b` are for red, green and blue these values are from 0 - 255 and define the color of the button.
+`r`, `g`, `b` **(depricated)** are for red, green and blue these values are from 0 - 255 and define the color of the button.
 They are optional if they are not set, they will be given the value 96
 
 ## Group Buttons via the `group` property

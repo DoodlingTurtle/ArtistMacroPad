@@ -217,10 +217,30 @@ namespace Components::ButtonManager
                 winDim("y", -1, winHeight),
                 winDim("w", 1, winWidth),
                 winDim("h", 1, winHeight)};
-            SDL_Color col = {
-                static_cast<unsigned char>(RGSDL::Utils::readIniGroupInt(iniGrp, "r", 96)),
-                static_cast<unsigned char>(RGSDL::Utils::readIniGroupInt(iniGrp, "g", 96)),
-                static_cast<unsigned char>(RGSDL::Utils::readIniGroupInt(iniGrp, "b", 96)), 255};
+
+            SDL_Color col;
+            std::string colorAttr = RGSDL::Utils::readIniGroupValue(iniGrp, "color", "");
+
+            if (colorAttr.length() > 0)
+            {
+                if (colorAttr.at(0) == '#')
+                {
+                    uint32_t colorValue = RGSDL::Utils::convertHex2Int(colorAttr.substr(1));
+                    col = {
+                        (unsigned char)((colorValue & 0xff0000) >> 16),
+                        (unsigned char)((colorValue & 0x00ff00) >> 8),
+                        (unsigned char)((colorValue & 0x0000ff)), 255};
+                }
+                else
+                    col = {96, 96, 96, 255};
+            }
+            else
+            {
+                col = {
+                    static_cast<unsigned char>(RGSDL::Utils::readIniGroupInt(iniGrp, "r", 96)),
+                    static_cast<unsigned char>(RGSDL::Utils::readIniGroupInt(iniGrp, "g", 96)),
+                    static_cast<unsigned char>(RGSDL::Utils::readIniGroupInt(iniGrp, "b", 96)), 255};
+            }
 
             game->switchLayer(layer_BG);
             game->setDrawColor(col);

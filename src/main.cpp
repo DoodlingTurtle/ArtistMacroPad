@@ -20,6 +20,7 @@ int main(int argc, char **argv)
     }
 
     int ret = 0, winWidth, winHeight, viewWidth, viewHeight, winX, winY;
+    uint32_t bgColor;
     bool alphaButtonScale = false;
 
     while (nextWindow.length() > 0)
@@ -53,6 +54,7 @@ int main(int argc, char **argv)
         viewWidth = Utils::readIniGroupInt(win, "width", 100);
         viewHeight = Utils::readIniGroupInt(win, "height", 100);
         alphaButtonScale = Utils::readIniGroupValue(win, "percentmessurements", "").length() > 0;
+        bgColor = Utils::convertHex2Int(Utils::readIniGroupValue(win, "color", "#401040").substr(1));
 
         ini->erase(ini->find("window"));
 
@@ -86,6 +88,11 @@ int main(int argc, char **argv)
             ms = new Scenes::MainScene(ini,
                                        alphaButtonScale ? (float)viewWidth / 100.0f : 1.0f,
                                        alphaButtonScale ? (float)viewHeight / 100.0f : 1.0f);
+
+            game.backgroundColor = {
+                (unsigned char)((bgColor & 0xff0000) >> 16),
+                (unsigned char)((bgColor & 0x00ff00) >> 8),
+                (unsigned char)((bgColor & 0x0000ff)), 255};
 
             ret = game.start(
                 argc, argv, viewWidth, viewHeight, 96.0f,
