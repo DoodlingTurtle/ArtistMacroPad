@@ -7,7 +7,12 @@ This application is optimized for Linux Tablets and Touchscreens you will need t
 
 As the backend for this application I'm using xdotool to send mouse and keyboard command to the X-Server.
 
-This application is still in a very early alpha stage so if you want to help me to squash bugs, I would be more then happy about feedback. Either here on github or on Twitter @TurtleDoodling
+This application is currently in the beta stage. If you want to help me to squash bugs, I would be more then happy about feedback. Either here on github or on Twitter @TurtleDoodling
+
+I have Video a guide on how to install and use it:
+- Part 1: Installation and creating your first Buttons: https://youtu.be/Y5m0-rG7SmU
+- Part 2: Creating Macros and executing Shell commands: https://youtu.be/b33q2sIzpy0 
+- Part 3: Creating button groups: comming soon
 
 
 # Installation
